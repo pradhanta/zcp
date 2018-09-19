@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.record.Record;
 
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import org.apache.log4j.Logger;
 import com.google.gson.GsonBuilder;
@@ -67,7 +68,8 @@ public class PacketHandler {
 
             Future<RecordMetadata> kafkaMsg = producer.send(new ProducerRecord<String, String>(TOPIC_NAME,
                     "JSONPacket", packet.toJSON()));
-            kafkaMsg.wait(TIME_OUT);
+            RecordMetadata metadata = kafkaMsg.get();
+            Logger.getRootLogger().info(metadata);
         } catch (Exception ex) {
             Logger.getRootLogger().error("Error occurred while sending packet to kafka", ex);
         }

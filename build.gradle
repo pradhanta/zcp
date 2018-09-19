@@ -27,6 +27,19 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
     compile group: 'org.apache.kafka', name: 'kafka-clients', version: '0.8.2.1'
 
+    // https://mvnrepository.com/artifact/org.kie.server/kie-server-client
+    compile group: 'org.kie.server', name: 'kie-server-client', version: '7.11.0.Final'
+
+    // https://mvnrepository.com/artifact/org.jboss.bom.brms/jboss-brms-bpmsuite-bom
+    compile group: 'org.jboss.bom.brms', name: 'jboss-brms-bpmsuite-bom', version: '6.4.11.GA-redhat-2', ext: 'pom'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.0.5.RELEASE'
+
+    // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
+    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.10.RELEASE'
+
+
 }
 group 'com.zcp.socket'
 version '1.0-SNAPSHOT'
