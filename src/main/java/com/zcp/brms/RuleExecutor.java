@@ -1,23 +1,26 @@
 package com.zcp.brms;
 
-import com.myspace.zcp.CreditRequest;
+import com.myspace.zcp.Message;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.KieSession;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieServiceResponse;
 import org.kie.server.api.model.ServiceResponse;
 import org.kie.server.api.model.definition.ProcessDefinition;
 import org.kie.server.client.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-public class RuleExecutor {
+public class RuleExecutor extends DefaultAgendaEventListener  {
     private static final String URL = "http://localhost:8080/kie-server/services/rest/server";
     private static final String USER = "wbadmin";
     private static final String PASSWORD = "wbadmin";
@@ -30,21 +33,23 @@ public class RuleExecutor {
     public void initialize() {
         conf = KieServicesFactory.newRestConfiguration(URL, USER, PASSWORD);
         conf.setMarshallingFormat(FORMAT);
+
         kieServicesClient = KieServicesFactory.newKieServicesClient(conf);
+
     }
 
     public void executeCommands() {
-        String containerId = "ZCP_1.0.3";
+        String containerId = "ZCP_1.0.1";
         System.out.println("== Sending commands to the server ==");
         RuleServicesClient rulesClient = kieServicesClient.getServicesClient(RuleServicesClient.class);
 
-        CreditRequest zcpCreditRequest = new CreditRequest();
-        zcpCreditRequest.setBIN("020016");
-        zcpCreditRequest.setReleaseNumber("D1");
-        zcpCreditRequest.setActions(new ArrayList<>());
+        Message zcpClaimRequest = new Message();
+        zcpClaimRequest.setId(020014L);
+        zcpClaimRequest.setVersionNumberRH("D0");
+
 
         KieCommands commandsFactory = KieServices.Factory.get().getCommands();
-        Command<?> insert = commandsFactory.newInsert(zcpCreditRequest);
+        Command<?> insert = commandsFactory.newInsert(zcpClaimRequest, "OutId");
         Command<?> fireAllRules = commandsFactory.newFireAllRules();
         Command<?> batchCommand = commandsFactory.newBatchExecution(Arrays.asList(insert, fireAllRules));
         ServiceResponse<ExecutionResults> executeResponse = rulesClient.executeCommandsWithResults(containerId, batchCommand);
@@ -71,5 +76,14 @@ public class RuleExecutor {
         RuleExecutor ex = new RuleExecutor();
         ex.initialize();
         ex.executeCommands();
+    }
+
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DebugAgendaEventListener.class);
+
+    @Override
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        Rule rule = event.getMatch().getRule();
+        LOGGER.info("Rule fired: " + rule.getName());
     }
 }
