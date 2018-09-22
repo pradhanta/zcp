@@ -5,6 +5,7 @@ import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieServiceResponse;
 import org.kie.server.api.model.ServiceResponse;
@@ -33,7 +34,7 @@ public class RuleExecutor {
     }
 
     public void executeCommands() {
-        String containerId = "ZCP_1.0.2";
+        String containerId = "ZCP_1.0.3";
         System.out.println("== Sending commands to the server ==");
         RuleServicesClient rulesClient = kieServicesClient.getServicesClient(RuleServicesClient.class);
 

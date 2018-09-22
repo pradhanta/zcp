@@ -13,6 +13,7 @@ public class Sender {
      * @param args
      */
     public static void main(String[] args) throws IOException {
+        /*6000 - 6100*/
         try(Socket echoSocket = new Socket("localhost", 12345)) {
             BufferedOutputStream outputStream = new BufferedOutputStream(echoSocket.getOutputStream());
             outputStream.write(0x02);
